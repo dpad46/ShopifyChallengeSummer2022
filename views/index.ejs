@@ -1,0 +1,123 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Shopify Challenge</title>
+	<link rel="stylesheet" href="/css/styles.css" />
+</head>
+
+<div class="tabs">
+<body>
+    <h1> Shopify Backend Developer Intern Challenge </h1>
+	
+	<hr class="solid">
+
+    <h2>Create Item</h2>
+	
+	<!-- Create Item Form -->
+    <form action="/create" method="POST">
+        <input type="text" placeholder="Name" name="name" required>
+        <input type="text" placeholder="Tag" name="tag">
+		Quantity: <input type="number" id="quantity" name="quantity" min="1" max="10000" value="1" required><br><br>
+        <button type="submit">Submit</button>
+    </form>
+	
+	<hr class="solid">
+
+    <h2> Inventory </h2>
+	
+	<!-- Filter/Sort Form -->
+	<form action="/sort" method="POST">
+		<label for="filterType">Filter:</label>
+		<select name="filterType" id="filterType">
+			<option value="name">Name</option>
+			<option value="tag">Tag</option>
+		</select>
+		<input type="text" name="filter" placeholder="None" size="10">
+		&nbsp;
+		<label for="sort">Sort:</label>
+		<select name="sort" id="sort">
+			<option value="none">None</option>
+			<option value="name">Name</option>
+			<option value="tag">Tag</option>
+			<option value="quantity">Quantity</option>
+		</select>
+		<select name="order" id="order">
+			<option value=1>Ascending</option>
+			<option value=-1>Descending</option>
+		</select>
+		&nbsp;&nbsp;
+		<button type="submit">Search</button>
+	</form>
+	
+	<!-- Inventory Table -->
+	<table class="content-table">
+		<thead>
+			<tr>
+				<th>Item</th>
+				<th>Tag</th>
+				<th>Quantity</th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<% for(var i = 0; i < items.length; i++) {%>
+				<tr>
+					<td><%= items[i].name %></td>
+					<td><%= items[i].tag %></td>
+					<td><%= items[i].quantity %></td>
+					<td>
+						<button name="<%= items[i].name%>" onClick="reply_click(this.name)">Edit Item</button>
+					</td>
+					<td>
+						<form action="/delete" method="POST" class="delete-button">
+							<input type="hidden" id="name" name="name" value="<%= items[i].name%>">
+							<button type="submit">Delete Item</button>
+						</form>
+					</td>
+				</tr>
+			<% } %>
+		</tbody>
+	</table>
+	</div>
+	
+	<!-- Edit Window -->
+	<div id="myModal" class="modal">
+	  <div class="modal-content">
+		<span class="close">&times;</span>
+		<p><b>Edit Entry for Item: 
+		<label id = "editItemName">
+			Item Here
+		</label></b></p>
+		<form action="/edit" method="POST">
+			<input type="text" placeholder="New Name" name="newInfo[name]" required>
+			<input type="text" placeholder="New Tag" name="newInfo[tag]">
+			Quantity: <input type="number" id="quantity" name="newInfo[quantity]" min="1" max="10000" value="1" required><br><br>
+			<input type="hidden" id="editId" name="target" value=null>
+			<button type="submit">Submit</button>
+		</form>
+	  </div>
+
+	</div>
+</body>
+
+<!-- Edit Window Script-->
+<script>
+	var modal = document.getElementById("myModal");
+	var btns = document.getElementsByClassName("editBtn");
+	var span = document.getElementsByClassName("close")[0];
+	
+	function reply_click(clicked_name)
+	{
+		document.getElementById('editItemName').innerHTML = clicked_name;
+		document.getElementById("editId").value = clicked_name;
+		modal.style.display = "block";
+	}
+
+	span.onclick = function() {
+	  modal.style.display = "none";
+	}
+</script>
+
+</html>
